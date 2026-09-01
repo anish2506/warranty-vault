@@ -1,0 +1,638 @@
+.pd-page {
+  min-height: 100vh;
+  background: var(--bg-app);
+  padding: 28px 20px 60px;
+}
+
+.pd-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ── Loading ── */
+.pd-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--text-muted);
+}
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-subtle);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.pd-error {
+  color: var(--expired-text);
+  font-weight: 500;
+}
+
+/* ── Back btn ── */
+.back-btn {
+  padding: 8px 14px;
+  background: #ffffff;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.back-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ── Breadcrumb ── */
+.pd-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.breadcrumb-sep {
+  color: var(--text-subtle);
+}
+
+.breadcrumb-current {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
+}
+
+/* ── Hero ── */
+.pd-hero {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.pd-hero-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.pd-hero-icon {
+  font-size: 36px;
+  width: 56px;
+  height: 56px;
+  background: var(--primary-light);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pd-hero-text h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.pd-hero-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 5px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.pd-category-tag {
+  padding: 2px 9px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pd-model {
+  font-size: 13px;
+}
+
+.pd-hero-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pd-edit-btn {
+  padding: 8px 16px;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pd-edit-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.pd-delete-btn {
+  padding: 8px 16px;
+  border: 1.5px solid var(--expired-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  color: var(--expired-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pd-delete-btn:hover {
+  background: var(--expired-bg);
+}
+
+/* ── Grid ── */
+.pd-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 22px;
+  align-items: start;
+}
+
+.pd-left, .pd-right {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ── Card Base ── */
+.pd-card {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pd-card h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* ── Warranty Card ── */
+.warranty-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.warranty-countdown {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+}
+
+.warranty-countdown-value {
+  font-size: 24px;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.warranty-countdown-value.badge-active { color: var(--active-text); }
+.warranty-countdown-value.badge-expiring { color: var(--expiring-text); }
+.warranty-countdown-value.badge-expired { color: var(--expired-text); }
+.warranty-countdown-value.badge-not-started { color: var(--not-started-text); }
+
+.warranty-countdown-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.warranty-progress-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.warranty-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.warranty-progress-pct {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.warranty-dates-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.warranty-date-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+}
+
+.wdi-label {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-subtle);
+  font-weight: 600;
+}
+
+.wdi-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.expired-date {
+  color: var(--expired-text);
+}
+
+/* ── Product Info Grid ── */
+.pd-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.pd-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pd-info-label {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-subtle);
+  font-weight: 600;
+}
+
+.pd-info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.price-value {
+  color: var(--primary);
+}
+
+.pd-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+}
+
+.pd-notes p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ── Vault Card ── */
+.vault-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.vault-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.vault-header p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.vault-count {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Upload zone ── */
+.upload-zone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1.5px dashed var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+
+.upload-zone-label {
+  flex: 1;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.upload-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+.upload-selected {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--active-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  display: block;
+}
+
+.upload-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: white;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.upload-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-spinner-dark {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+.doc-error {
+  padding: 9px 12px;
+  background: var(--expired-bg);
+  color: var(--expired-text);
+  border: 1px solid var(--expired-border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+}
+
+/* ── Vault List ── */
+.vault-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vault-empty {
+  text-align: center;
+  padding: 28px 16px;
+  color: var(--text-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+}
+
+.vault-empty p {
+  font-size: 13px;
+}
+
+.vault-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 12px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  gap: 10px;
+}
+
+.vault-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.file-type-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.ft-pdf {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.ft-img {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.ft-file {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.vault-item-info {
+  min-width: 0;
+}
+
+.vault-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.vault-item-type {
+  font-size: 11.5px;
+  color: var(--text-subtle);
+}
+
+.vault-item-actions {
+  display: flex;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.vault-view-btn {
+  padding: 5px 11px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.vault-view-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.vault-delete-btn {
+  padding: 5px 11px;
+  background: var(--expired-bg);
+  color: var(--expired-text);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.vault-delete-btn:hover {
+  background: var(--expired);
+  color: white;
+}
+
+/* ── Status badge (shared) ── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-active { background: var(--active-bg); color: var(--active-text); border: 1px solid var(--active-border); }
+.badge-expiring { background: var(--expiring-bg); color: var(--expiring-text); border: 1px solid var(--expiring-border); }
+.badge-expired { background: var(--expired-bg); color: var(--expired-text); border: 1px solid var(--expired-border); }
+.badge-not-started { background: var(--not-started-bg); color: var(--not-started-text); }
+.badge-unknown { background: var(--bg-subtle); color: var(--text-subtle); }
+
+/* ── Progress (shared) ── */
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.6s ease;
+  border: none !important;
+}
+
+.progress-bar-fill.badge-active { background: linear-gradient(90deg, #10b981, #34d399); }
+.progress-bar-fill.badge-expiring { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.progress-bar-fill.badge-expired { background: linear-gradient(90deg, #ef4444, #f87171); }
+.progress-bar-fill.badge-not-started { background: linear-gradient(90deg, #6366f1, #818cf8); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .pd-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .pd-hero {
+    flex-direction: column;
+  }
+
+  .pd-hero-right {
+    width: 100%;
+  }
+
+  .pd-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

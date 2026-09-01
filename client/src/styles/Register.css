@@ -1,0 +1,3 @@
+/* Register uses the same auth design system as Login.css */
+/* All styles are shared via the auth-page, auth-card, auth-form class names */
+@import './Login.css';
