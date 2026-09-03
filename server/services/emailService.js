@@ -1,39 +1,28 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+// Initialize Resend with API key
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
- * Creates and configures Nodemailer transporter using environment variables.
+ * Generic email sender using Resend API (works on Render Free!)
  */
-const createTransporter = () => {
-  const host = process.env.EMAIL_HOST || "smtp.gmail.com";
-  const port = parseInt(process.env.EMAIL_PORT, 10) || 587;
-  const user = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : "";
-  const pass = process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.trim() : "";
-  const secure = process.env.EMAIL_SECURE === "true" || port === 465;
+const sendEmail = async ({ to, subject, text, html }) => {
+  const from = process.env.EMAIL_FROM || "noreply@warrantyvault.com";
 
-  if (!user || !pass || user === "your_email@gmail.com") {
-    console.warn("⚠️ Email service: EMAIL_USER or EMAIL_PASSWORD not configured in server/.env");
-  }
-
-  // If using Gmail, Nodemailer has built-in service presets for high reliability
-  if (host.includes("gmail") || user.endsWith("@gmail.com")) {
-    return nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user,
-        pass,
-      },
+  try {
+    const response = await resend.emails.send({
+      from,
+      to,
+      subject,
+      html: html || text,
     });
-  }
 
-  return nodemailer.createTransport({
-    host,
-    port,
-    secure,
-    auth: {
-      user,
-      pass,
-    },
-  });
+    console.log(`✉️ Email sent successfully to ${to} (Message ID: ${response.id})`);
+    return response;
+  } catch (error) {
+    console.error("❌ Email send failed:", error.message);
+    throw error;
+  }
 };
 
 /**
@@ -131,74 +120,54 @@ const getWarrantyEmailTemplate = ({ userName, productName, brand, warrantyEnd, d
 };
 
 /**
- * Generic email sender.
+ * Test email sender
  */
-const sendEmail = async ({ to, subject, text, html }) => {
-  const from = process.env.EMAIL_FROM || `"WarrantyVault" <${process.env.EMAIL_USER || "no-reply@warrantyvault.com"}>`;
-  const transporter = createTransporter();
-
-  const mailOptions = {
-    from,
-    to,
-    subject,
-    text,
-    html,
-  };
-
-  const info = await transporter.sendMail(mailOptions);
-  console.log(`✉️ Email sent successfully to ${to} (Message ID: ${info.messageId})`);
-  return info;
-};
-
-/**
- * Sends a warranty alert email to a user.
- */
-const sendWarrantyAlert = async ({ to, userName, productName, brand, warrantyEnd, daysRemaining, isExpired }) => {
+const sendTestEmail = async (email) => {
   const template = getWarrantyEmailTemplate({
-    userName,
-    productName,
-    brand,
-    warrantyEnd,
-    daysRemaining,
-    isExpired,
+    userName: "Test User",
+    productName: "Test Product",
+    brand: "Test Brand",
+    warrantyEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    daysRemaining: 7,
+    isExpired: false,
   });
 
-  return await sendEmail({
-    to,
+  await sendEmail({
+    to: email,
     subject: template.subject,
-    text: template.text,
     html: template.html,
   });
 };
 
 /**
- * Sends a test email to verify SMTP configuration.
+ * Send warranty alert email
  */
-const sendTestEmail = async ({ to, userName }) => {
-  return await sendEmail({
-    to,
-    subject: "✅ WarrantyVault — Test Email Notification",
-    text: `Hello ${userName || "User"},\n\nThis is a test notification from WarrantyVault to verify that your email configuration is working properly.\n\nBest regards,\nWarrantyVault Team`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 550px; margin: 0 auto; padding: 25px; border: 1px solid #e5e7eb; border-radius: 10px;">
-        <h2 style="color: #2563eb; margin-top: 0;">✅ Email Configuration Active</h2>
-        <p style="color: #374151; font-size: 15px;">
-          Hello <strong>${userName || "there"}</strong>,
-        </p>
-        <p style="color: #4b5563; font-size: 14px; line-height: 1.5;">
-          This test email confirms that your WarrantyVault email alert system is connected and working successfully!
-        </p>
-        <p style="color: #6b7280; font-size: 12px; margin-top: 20px;">
-          WarrantyVault Email Service
-        </p>
-      </div>
-    `,
-  });
+const sendWarrantyAlert = async (user, product, daysRemaining) => {
+  try {
+    const template = getWarrantyEmailTemplate({
+      userName: user.username,
+      productName: product.name,
+      brand: product.brand,
+      warrantyEnd: product.warrantyEnd,
+      daysRemaining,
+      isExpired: daysRemaining <= 0,
+    });
+
+    await sendEmail({
+      to: user.email,
+      subject: template.subject,
+      html: template.html,
+    });
+
+    console.log(`✉️ Warranty alert sent to ${user.email} for ${product.name}`);
+  } catch (error) {
+    console.error(`❌ Failed to send warranty alert to ${user.email}:`, error.message);
+  }
 };
 
 module.exports = {
   sendEmail,
-  sendWarrantyAlert,
   sendTestEmail,
+  sendWarrantyAlert,
   getWarrantyEmailTemplate,
 };
