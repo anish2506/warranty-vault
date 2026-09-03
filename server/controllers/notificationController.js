@@ -24,7 +24,7 @@ const sendUserTestEmail = async (req, res) => {
     res.status(200).json({
       success: true,
       message: `Test email sent successfully to ${user.email}`,
-      messageId: info.messageId,
+      messageId: info.id,
     });
   } catch (error) {
     console.error("Test email error:", error);

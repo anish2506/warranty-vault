@@ -8,7 +8,10 @@ const authRoutes = require("./routes/authRoutes");
 const documentRoutes = require("./routes/documentRoutes");
 const ocrRoutes = require("./routes/ocrRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
-const { initWarrantyCron } = require("./services/warrantyCron");
+const {
+  initWarrantyCron,
+  checkWarrantyExpirations,
+} = require("./services/warrantyCron");
 
 dotenv.config();
 
@@ -31,6 +34,18 @@ app.use("/api/ocr", ocrRoutes);
 app.use("/api/notifications", notificationRoutes);
 
 const PORT = process.env.PORT || 5000;
+
+app.post("/api/internal/warranty-check", async (req, res) => {
+  if (!process.env.CRON_SECRET || req.get("x-cron-secret") !== process.env.CRON_SECRET) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized",
+    });
+  }
+
+  const result = await checkWarrantyExpirations();
+  return res.status(result.success ? 200 : 500).json(result);
+});
 
 app.get("/", (req, res) => {
   res.json({

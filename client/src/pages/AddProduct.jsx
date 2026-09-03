@@ -54,16 +54,10 @@ const AddProduct = () => {
 
       const data = new FormData();
       data.append("document", invoiceFile);
-      const token = localStorage.getItem("token");
+      const response = await api.post("/ocr", data);
 
-      const response = await fetch("http://localhost:5000/api/ocr", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: data,
-      });
-
-      const result = await response.json();
-      if (!response.ok || !result.success) throw new Error(result.message || "OCR failed");
+      const result = response.data;
+      if (!result.success) throw new Error(result.message || "OCR failed");
 
       const fields = result.fields;
       const missing = [];

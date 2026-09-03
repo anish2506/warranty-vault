@@ -1,24 +1,48 @@
-const { Resend } = require("resend");
+const getSender = () => {
+  const configuredFrom = process.env.EMAIL_FROM || "WarrantyVault <no-reply@example.com>";
+  const match = configuredFrom.match(/^(.*)\s*<([^>]+)>$/);
 
-// Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+  if (match) {
+    return { name: match[1].trim(), email: match[2].trim() };
+  }
+
+  return { email: configuredFrom.trim(), name: "WarrantyVault" };
+};
 
 /**
- * Generic email sender using Resend API (works on Render Free!)
+ * Generic email sender using Brevo's HTTPS API (works on Render Free).
  */
 const sendEmail = async ({ to, subject, text, html }) => {
-  const from = process.env.EMAIL_FROM || "noreply@warrantyvault.com";
+  const apiKey = process.env.BREVO_API_KEY;
 
   try {
-    const response = await resend.emails.send({
-      from,
-      to,
-      subject,
-      html: html || text,
+    if (!apiKey) {
+      throw new Error("BREVO_API_KEY is not configured");
+    }
+
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "api-key": apiKey,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: getSender(),
+        to: [{ email: to }],
+        subject,
+        textContent: text,
+        htmlContent: html || text,
+      }),
     });
 
-    console.log(`✉️ Email sent successfully to ${to} (Message ID: ${response.id})`);
-    return response;
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Brevo rejected the email");
+    }
+
+    console.log(`Email accepted by Brevo for ${to} (Message ID: ${result.messageId})`);
+    return { id: result.messageId };
   } catch (error) {
     console.error("❌ Email send failed:", error.message);
     throw error;
@@ -122,9 +146,9 @@ const getWarrantyEmailTemplate = ({ userName, productName, brand, warrantyEnd, d
 /**
  * Test email sender
  */
-const sendTestEmail = async (email) => {
+const sendTestEmail = async ({ to, userName }) => {
   const template = getWarrantyEmailTemplate({
-    userName: "Test User",
+    userName: userName || "Test User",
     productName: "Test Product",
     brand: "Test Brand",
     warrantyEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -132,8 +156,8 @@ const sendTestEmail = async (email) => {
     isExpired: false,
   });
 
-  await sendEmail({
-    to: email,
+  return sendEmail({
+    to,
     subject: template.subject,
     html: template.html,
   });
@@ -142,27 +166,31 @@ const sendTestEmail = async (email) => {
 /**
  * Send warranty alert email
  */
-const sendWarrantyAlert = async (user, product, daysRemaining) => {
-  try {
+const sendWarrantyAlert = async ({
+  to,
+  userName,
+  productName,
+  brand,
+  warrantyEnd,
+  daysRemaining,
+  isExpired,
+}) => {
     const template = getWarrantyEmailTemplate({
-      userName: user.username,
-      productName: product.name,
-      brand: product.brand,
-      warrantyEnd: product.warrantyEnd,
+      userName,
+      productName,
+      brand,
+      warrantyEnd,
       daysRemaining,
-      isExpired: daysRemaining <= 0,
+      isExpired,
     });
 
     await sendEmail({
-      to: user.email,
+      to,
       subject: template.subject,
       html: template.html,
     });
 
-    console.log(`✉️ Warranty alert sent to ${user.email} for ${product.name}`);
-  } catch (error) {
-    console.error(`❌ Failed to send warranty alert to ${user.email}:`, error.message);
-  }
+    console.log(`Warranty alert sent to ${to} for ${productName}`);
 };
 
 module.exports = {
