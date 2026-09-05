@@ -15,12 +15,6 @@ const {
 
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
-
-// Initialize daily warranty cron scheduler (Runs once on startup)
-initWarrantyCron();
-
 const app = express();
 
 app.use(cors());
@@ -63,6 +57,13 @@ app.get("/", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+  await connectDB();
+  initWarrantyCron();
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer();
